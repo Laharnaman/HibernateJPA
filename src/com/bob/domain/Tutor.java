@@ -28,8 +28,7 @@ public class Tutor {
 	@OneToMany
 	@MapKey(name="enrollmentID")
 	@JoinColumn(name="TUTOR_FK")
-	//private Set<Student> supervisionGroup;
-	private Map<String, Student> supervisionGroup;
+	private Set<Student> supervisionGroup;
 	
 	
 	Tutor() {}
@@ -40,12 +39,12 @@ public class Tutor {
 		this.staffId = staffId;
 		this.name = name;
 		this.salary = salary;
-		this.supervisionGroup = new HashMap<String, Student>(); 
+		this.supervisionGroup = new HashSet<Student>(); 
 	}
 
 	public Tutor(String name) {
 		this.name=name;
-		this.supervisionGroup = new HashMap<String, Student>();
+		this.supervisionGroup = new HashSet<Student>();
 	}
 
 	public Tutor(String staffId, String name) {
@@ -54,11 +53,11 @@ public class Tutor {
 	}
 
 	public void addStudentsToSupervisionGroup(Student s){
-		this.supervisionGroup.put(s.getEnrollmentID(), s);
+		this.supervisionGroup.add(s);
 	}
 	
-	public Map<String, Student> getSupervisionGroup(){
-		return Collections.unmodifiableMap(this.supervisionGroup); //avoids side-effects
+	public Set<Student> getSupervisionGroup(){
+		return Collections.unmodifiableSet(this.supervisionGroup); //avoids side-effects
 		//return this.supervisionGroup;
 	}
 	@Override
@@ -99,7 +98,7 @@ public class Tutor {
 		this.name = name;
 	}
 
-	public void setSupervisionGroup(Map<String, Student> supervisionGroup) {
+	public void setSupervisionGroup(Set<Student> supervisionGroup) {
 		this.supervisionGroup = supervisionGroup;
 	}
 	

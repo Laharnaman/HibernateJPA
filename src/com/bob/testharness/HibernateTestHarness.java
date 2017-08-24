@@ -38,8 +38,8 @@ public class HibernateTestHarness {
 			
 				Consumer<Tutor> printTutorsAndStudents = t -> {
 					System.out.println("\nTutor is:>>"+t.getName());
-					Map<String,Student> studentMap = t.getSupervisionGroup();
-					studentMap.keySet().forEach(k -> System.out.println("Key= "+k+ ", "+studentMap.get(k)));
+					Set<Student> studentMap = t.getSupervisionGroup();
+					studentMap.forEach(s -> System.out.println(s));
 				};
 				
 				tutorListFromDB
