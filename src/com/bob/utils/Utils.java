@@ -46,6 +46,47 @@ public class Utils {
 		return updatedTutorList;
 
 	}
+	
+	public static Set<Student> assignTutorsToStudents(Set<Tutor> tutors, Set<Student> students) {
+		//Tutors by name
+		Optional<Tutor> tutor_heisenberg = tutors.stream().filter(t -> t.getName().toLowerCase().contains("heisenberg"))
+				.findFirst();
+
+		Optional<Tutor> tutor_feynman = tutors.stream().filter(t -> t.getName().toLowerCase().contains("feynman"))
+				.findFirst();
+
+		Optional<Tutor> tutor_mills = tutors.stream().filter(t -> t.getName().toLowerCase().contains("mills"))
+				.findFirst();
+		
+		// Students by name
+		List<Student> millars = students.stream().filter(s -> s.getName().toLowerCase().contains("millar"))
+				.collect(Collectors.toList());
+
+		List<Student> kellys = students.stream().filter(s -> s.getName().toLowerCase().contains("kelly"))
+				.collect(Collectors.toList());
+		List<Student> mccreadys = students.stream().filter(s -> s.getName().toLowerCase().contains("mccready"))
+				.collect(Collectors.toList());
+		
+		//Assign a specific tutor to each student with the name 'kelly'
+		for (Student s : kellys) {
+			s.allocateSupervisor(tutor_heisenberg.get());
+		}
+		for (Student s : mccreadys) {
+			s.allocateSupervisor(tutor_feynman.get());
+		}
+		for (Student s : millars) {
+			s.allocateSupervisor(tutor_mills.get());
+		}
+		
+		//Now add all the 3 student lists together.
+		Set<Student> updatedStudentList = new HashSet<Student>();
+		updatedStudentList.addAll(kellys);
+		updatedStudentList.addAll(mccreadys);
+		updatedStudentList.addAll(millars);
+		
+		return updatedStudentList;
+		
+	}
 
 	public static Set<Student> generateSampleSetOfStudents() {
 		Set<Student> students = new HashSet<Student>();
@@ -67,7 +108,7 @@ public class Utils {
 
 	public static Set<Tutor> generateSampleSetOfTutors() {
 		int min = 50000;
-		int max = 120000;
+		int max = 90000;
 		Random r = new Random();
 
 		Set<Tutor> tutors = new HashSet<Tutor>();

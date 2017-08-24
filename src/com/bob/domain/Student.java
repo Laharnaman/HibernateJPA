@@ -1,13 +1,11 @@
 package com.bob.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * Represents a Student enrolled in the college management
@@ -23,8 +21,9 @@ public class Student
 	
     private String enrollmentID;
     private String name;
- //   @ManyToOne
-//    private Tutor supervisor; 
+    @ManyToOne
+    @JoinColumn(name="TUTOR_FK")
+    private Tutor supervisor; 
    
     /*
      * Hibernate needs this.
@@ -35,11 +34,11 @@ public class Student
     /**
      * Initialises a student with a particular tutor
      */
- /*   public Student(String name, Tutor tutorName)
+    public Student(String name, Tutor tutor)
     {
     	this.name = name;
-    	this.supervisor = tutorName;
-    }*/
+    	this.supervisor = tutor;
+    }
     
     /**
      * Initialises a student with no pre set tutor
@@ -54,13 +53,13 @@ public class Student
     {
     	this.name = name;
     	this.enrollmentID=enrollmentID;
-//    	this.supervisor  = null;
+    	this.supervisor  = null;
     }
     
     @Override
 	public String toString() {
-	//	return "Student [enrollmentID=" + enrollmentID + ", name=" + name + ", supervisor=" + supervisor.getName() + "]";
-		return "Student [enrollmentID=" + enrollmentID + ", name=" + name  + "]";
+		return "Student [  " + enrollmentID + ", " + name + ", " + supervisor.getName() + "  ]";
+	//	return "Student [enrollmentID=" + enrollmentID + ", name=" + name  + "]";
 	}
 	public double calculateGradePointAverage()
     {
@@ -97,7 +96,7 @@ public class Student
 	public void setName(String name) {
 		this.name = name.toUpperCase();
 	}
-/*	public void allocateSupervisor(Tutor supervisor) {
+	public void allocateSupervisor(Tutor supervisor) {
 		this.supervisor=supervisor;
 		
 	}
@@ -106,6 +105,6 @@ public class Student
 	}
 	public void setSupervisor(Tutor supervisor) {
 		this.supervisor = supervisor;
-	}*/
+	}
 	
 }

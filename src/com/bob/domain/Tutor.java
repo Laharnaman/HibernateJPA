@@ -25,9 +25,10 @@ public class Tutor {
 	private String name;
 	private int salary;
 	
-	@OneToMany
-	@MapKey(name="enrollmentID")
-	@JoinColumn(name="TUTOR_FK")
+	// BI-DIRECTIONAL RELATIONSHIP SETUP
+	// 'mappedB' should really read: 'alreadyMappedBy'
+	//	It connects to the ManyToOne property on the Student table (basically saying they are the SAME relationship
+	@OneToMany(mappedBy="supervisor") 
 	private Set<Student> supervisionGroup;
 	
 	
