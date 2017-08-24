@@ -24,7 +24,7 @@ import com.bob.domain.Subject;
 import com.bob.domain.Tutor;
 import com.bob.utils.Utils;
 
-public class HibernateTestHarness {
+public class HibernateTestHarness10 {
 
 	private static SessionFactory sessionFactory;
 
@@ -35,48 +35,64 @@ public class HibernateTestHarness {
 
 		
 		//TEST OUTPUT from DB using Set for supervisionGroup in Tutor domain class.
-/*			List<Tutor> allTutors = new ArrayList<Tutor>();
+		Consumer<Tutor> printTutorsAndStudents = t -> {
+			System.out.println("\nTutor : "+ t);
+			Set<Student> studentMap = t.getSupervisionGroup();
+			studentMap.forEach(s -> System.out.println(s));
+		};
+		Consumer<Student> printStudentsAndTheirAllocatedTutors = s -> {
+			System.out.println(s);
+		};
+		
+		List<Tutor> allTutors = new ArrayList<Tutor>();
 			Query allTutorsQuery = session.createQuery("from Tutor");
-			allTutors = allTutorsQuery.list();
+		allTutors = allTutorsQuery.list();
 			
-				Consumer<Tutor> printTutorsAndStudents = t -> {
-					System.out.println("\nTutor : "+t.getName());
-					Set<Student> studentMap = t.getSupervisionGroup();
-					studentMap.forEach(s -> System.out.println(s));
-				};
-				Consumer<Student> printStudentsAndTheirAllocatedTutors = s -> {
-					System.out.println(s);
-				};
-				
-				allTutors
-				.stream()
-				.forEach(printTutorsAndStudents);
-				
-				System.out.println("=============================");
-				List<Student> studentListFromDB = new ArrayList<Student>();
-				Query allStudents = session.createQuery("from Student");
-				studentListFromDB = allStudents.list();
-				studentListFromDB
-				.stream()
-				.forEach(printStudentsAndTheirAllocatedTutors);*/
+		allTutors
+		.stream()
+		.forEach(printTutorsAndStudents);
+		
+		System.out.println("=============================");
+		List<Student> studentListFromDB = new ArrayList<Student>();
+		Query allStudents = session.createQuery("from Student");
+		studentListFromDB = allStudents.list();
+		
+		studentListFromDB
+		.stream()
+		.forEach(printStudentsAndTheirAllocatedTutors);
 			
 		// TEST OUTPUT from DB
 
 		
 		
 		// START NEW DATA GENERATION and test
-				Set<Subject> subjects = Utils.generateSampleSetOfSubjects();
-				Map<String, Subject> subjectMap = Utils.generateSampleMapOfSubjects();
-				Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
+			
+/*				Set<Subject> subjects = Utils.generateSampleSetOfSubjects();
+				Map<String, Subject> subjectMap = Utils.generateSampleMapOfSubjects(); //might already be in DB - check!
 				Set<Student> students = generateSampleSetOfStudents(subjectMap);
+				Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
+					
+				
 				tutors = assignStudentsToTutors(students, tutors);
-				//session.save(tutors.)
+				// SAVE
+				for (Subject s : subjectMap.values()) {
+					session.save(s);
+				}
+				for (Student s : students) {
+					session.save(s);
+				}			
+				for (Tutor t : tutors) {
+					session.save(t);
+				}*/
+	
+
+		// END SAVE
 				
 				// redundant since update to addStudentsToSupervisionGroup
 				//students = assignTutorsToStudents(tutors,students);
 				
 				// TEST output from above generation step
-	/*				Consumer<Tutor> printTutorsAndTheirSupervisionGroups = t -> {
+/*					Consumer<Tutor> printTutorsAndTheirSupervisionGroups = t -> {
 						System.out.println("\nTutor is:>>"+t.getName());
 						Set<Student> studentMap = t.getSupervisionGroup();
 						studentMap.forEach(s -> System.out.println(s));
@@ -97,25 +113,7 @@ public class HibernateTestHarness {
 				// END TEST
 		// END NEW DATA GENERATION
 	
-		// SAVE
-				for (Subject s : subjects) {
-					session.save(s);
-				}
-			
-				for (Tutor t : tutors) {
-//					for (Subject sub: t.getSubjects()) {
-//						session.save(sub);
-//					}
-					session.save(t);
-				}
-				for (Student s : students) {
-//					for (Subject sub: s.getSubjects()) {
-//						session.save(sub);
-//					}
-					session.save(s);
-				}
 
-		// END SAVE
 		
 				
 				

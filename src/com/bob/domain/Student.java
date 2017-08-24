@@ -1,10 +1,14 @@
 package com.bob.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 /**
@@ -21,9 +25,13 @@ public class Student
 	
     private String enrollmentID;
     private String name;
+   
     @ManyToOne
     @JoinColumn(name="TUTOR_FK")
     private Tutor supervisor; 
+    
+    @ManyToMany
+    private Set<Subject> subjects = new HashSet<Subject>();
    
     /*
      * Hibernate needs this.
@@ -49,6 +57,12 @@ public class Student
 //    	this.supervisor  = null;
     }
     
+    public Student(String name, Set<Subject> subjects)
+    {
+    	this.name = name;
+    	this.subjects=subjects;
+    }
+    
     public Student(String name, String enrollmentID)
     {
     	this.name = name;
@@ -58,7 +72,10 @@ public class Student
     
     @Override
 	public String toString() {
-		return "Student [  " + enrollmentID + ", " + name + ", " + supervisor.getName() + "  ]";
+    	String subjects = " SUBJECTS: [" + this.getSubjects().toString() + " ]";
+		return "Student [  " + enrollmentID + ", " + name + " ]" 
+    			+ " Tutor is: " + "[ "+ supervisor.getName() + "  ]"
+    			+ subjects;
 	//	return "Student [enrollmentID=" + enrollmentID + ", name=" + name  + "]";
 	}
 	public double calculateGradePointAverage()
@@ -96,8 +113,9 @@ public class Student
 	public void setName(String name) {
 		this.name = name.toUpperCase();
 	}
-	public void allocateSupervisor(Tutor supervisor) {
-		this.supervisor=supervisor;
+	public void allocateSupervisor(Tutor newSupervisor) {
+		this.supervisor=newSupervisor;
+		newSupervisor.getModifiableSupervisionGroup().add(this); // maintain bi-directional relationship.
 		
 	}
 	public Tutor getSupervisor() {
@@ -105,6 +123,12 @@ public class Student
 	}
 	public void setSupervisor(Tutor supervisor) {
 		this.supervisor = supervisor;
+	}
+	public Set<Subject> getSubjects() {
+		return subjects;
+	}
+	public void setSubjects(Set<Subject> subjects) {
+		this.subjects = subjects;
 	}
 	
 }

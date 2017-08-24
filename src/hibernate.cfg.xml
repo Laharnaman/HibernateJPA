@@ -24,6 +24,7 @@
 
 		<mapping class="com.bob.domain.Student" />
 		<mapping class="com.bob.domain.Tutor" />
+		<mapping class="com.bob.domain.Subject" />
 	</session-factory>
 
 

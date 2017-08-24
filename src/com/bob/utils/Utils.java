@@ -1,13 +1,16 @@
 package com.bob.utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.bob.domain.Student;
+import com.bob.domain.Subject;
 import com.bob.domain.Tutor;
 
 public class Utils {
@@ -88,16 +91,28 @@ public class Utils {
 		
 	}
 
-	public static Set<Student> generateSampleSetOfStudents() {
+	public static Set<Student> generateSampleSetOfStudents(Map<String,Subject> subjects) {
 		Set<Student> students = new HashSet<Student>();
-		students.add(new Student("Aaron McCready"));
-		students.add(new Student("Bob Kelly"));
-		students.add(new Student("Erinn Kelly"));
-		students.add(new Student("Emma Kelly"));
-		students.add(new Student("Karen McCready"));
-		students.add(new Student("Kristin Millar"));
-		students.add(new Student("Ryan Millar"));
-		students.add(new Student("Joy Millar"));
+		
+		Set<Subject> kelly_heisenberg_subjects = new HashSet<Subject>();
+		Set<Subject> millar_mills_subjects = new HashSet<Subject>();
+		Set<Subject> mcready_feynman_subjects = new HashSet<Subject>();
+		
+		kelly_heisenberg_subjects.add(subjects.get("QUA"));
+		kelly_heisenberg_subjects.add(subjects.get("MAT"));
+		millar_mills_subjects.add(subjects.get("GUT"));
+		millar_mills_subjects.add(subjects.get("COS"));
+		mcready_feynman_subjects.add(subjects.get("MHL"));
+		
+		students.add(new Student("Aaron McCready", mcready_feynman_subjects));
+		students.add(new Student("Bob Kelly", kelly_heisenberg_subjects));
+		students.add(new Student("Erinn Kelly",kelly_heisenberg_subjects));
+		students.add(new Student("Emma Kelly",kelly_heisenberg_subjects));
+		students.add(new Student("Karen McCready",mcready_feynman_subjects));
+		students.add(new Student("Kristin Millar",millar_mills_subjects));
+		students.add(new Student("Ryan Millar",millar_mills_subjects));
+		students.add(new Student("Joy Millar",millar_mills_subjects));
+		
 		int i = 1;
 		for (Student s : students) {
 			s.setEnrollmentID(s.getName().substring(0,3).toUpperCase()+"-" + (i++) + "-2017");
@@ -106,25 +121,68 @@ public class Utils {
 
 	}
 
-	public static Set<Tutor> generateSampleSetOfTutors() {
+	public static Set<Tutor> generateSampleSetOfTutors(Map<String,Subject> subjects) {
 		int min = 50000;
 		int max = 90000;
 		Random r = new Random();
-
+		//Map<String,Subject> subjects = generateSampleMapOfSubjects();
+		Set<Subject> feyman_subjects = new HashSet<Subject>();
+		Set<Subject> mills_subjects = new HashSet<Subject>();
+		Set<Subject> heisenberg_subjects = new HashSet<Subject>();
+		
+		feyman_subjects.add(subjects.get("QED"));
+		feyman_subjects.add(subjects.get("MHL"));
+		
+		mills_subjects.add(subjects.get("GUT"));
+		mills_subjects.add(subjects.get("ELE"));
+		mills_subjects.add(subjects.get("COS"));
+		
+		heisenberg_subjects.add(subjects.get("QUA"));
+		heisenberg_subjects.add(subjects.get("MAT"));
+		
 		Set<Tutor> tutors = new HashSet<Tutor>();
-		tutors.add(new Tutor("Richard Feynman"));
-		tutors.add(new Tutor("Randell Mills"));
-		tutors.add(new Tutor("Werner Heisenberg"));
+		tutors.add(new Tutor("Richard Feynman", feyman_subjects ));
+		tutors.add(new Tutor("Randell Mills", mills_subjects));
+		tutors.add(new Tutor("Werner Heisenberg", heisenberg_subjects));
 
 		int i = 0;
 
 		for (Tutor t : tutors) {
 			t.setStaffId("SID-" + (i++));
 			t.setSalary(r.nextInt((max - min) + 1) + min);
-			;
+			
 		}
 
 		return tutors;
 	}
 
+	public static Map<String, Subject> generateSampleMapOfSubjects() {
+		Map<String,Subject> subjectMap = new HashMap<String,Subject>();
+		
+		subjectMap.put("QED", new Subject("Quantum Electrodynamics", 3 ));
+		subjectMap.put("MHL", new Subject("Mechanics, Heat and Light", 1 ));
+		subjectMap.put("GUT", new Subject("GUT-CP", 3 ));
+		subjectMap.put("ELE", new Subject("Electromagnetism", 2 ));
+		subjectMap.put("COS", new Subject("Cosmology", 3 ));
+		subjectMap.put("QUA", new Subject("Quantum Mechanics", 3 ));
+		subjectMap.put("MAT", new Subject("Matrix Mechanics", 3 ));
+		
+		return subjectMap;
+	}
+	
+	public static Set<Subject> generateSampleSetOfSubjects() {
+		Set<Subject> set = new HashSet<Subject>();
+		
+		set.add(generateSampleMapOfSubjects().get("QED"));
+		set.add(generateSampleMapOfSubjects().get("MHL"));
+		set.add(generateSampleMapOfSubjects().get("GUT"));
+		set.add(generateSampleMapOfSubjects().get("ELE"));
+		set.add(generateSampleMapOfSubjects().get("COS"));
+		set.add(generateSampleMapOfSubjects().get("QUA"));
+		
+		return set;
+	}
+	
+
+	
 }
