@@ -30,7 +30,7 @@ public class HibernateTestHarness {
 		Transaction tx = session.beginTransaction();
 
 		
-		//TEST OUTPUT from DB
+		//TEST OUTPUT from DB using Map for supervisionGroup in Tutor domain class.
 			List<Tutor> tutorListFromDB = new ArrayList<Tutor>();
 			tutorListFromDB.add((Tutor)session.get(Tutor.class, 1));
 			tutorListFromDB.add((Tutor)session.get(Tutor.class, 2));
