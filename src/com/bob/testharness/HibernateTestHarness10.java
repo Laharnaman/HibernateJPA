@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -33,33 +34,45 @@ public class HibernateTestHarness10 {
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 
+		Tutor t1 = new Tutor("SID-04", "John von Neuman", 23456);
+		
+		/**
+		 * illustrates why using the db id as a comparison for equals is a bad idea
+		 * the following 3 objects would only result in 1 object being inserted into the Set!
+		 */
+		Student s1 = new Student("John Kelly", "EID-10-2015");
+		Student s2 = new Student("Jack Kelly", "EID-11-2014");
+		Student s3 = new Student("James Kelly", "EID-12-2016");
+		
+		t1.addStudentsToSupervisionGroup(s1); 
+		t1.addStudentsToSupervisionGroup(s2);
+		t1.addStudentsToSupervisionGroup(s3);
+		
+		Set<Student> allStudents = t1.getSupervisionGroup();
+		allStudents.stream().forEach(s -> System.out.println(s));
+		System.out.println("\n\n>>>"+ allStudents.size());
+		session.save(s1);
+		session.save(s2);
+		session.save(s3);
+		session.save(t1);
+		
+		tx.commit();
+		session.close();
+		
+		
+		/*session = sf.openSession();
+		tx = session.beginTransaction();
+		Tutor laura = (Tutor)session.get(Tutor.class, 1);
+		Set<Student> studentsInLaurasSupervisionGroup = laura.getSupervisionGroup();
+		
+		boolean isRyanInIt = studentsInLaurasSupervisionGroup.contains(s2);
+		System.out.println(isRyanInIt);
+		
+		tx.commit();
+		session.close();*/
 		
 		//TEST OUTPUT from DB using Set for supervisionGroup in Tutor domain class.
-		Consumer<Tutor> printTutorsAndStudents = t -> {
-			System.out.println("\nTutor : "+ t);
-			Set<Student> studentMap = t.getSupervisionGroup();
-			studentMap.forEach(s -> System.out.println(s));
-		};
-		Consumer<Student> printStudentsAndTheirAllocatedTutors = s -> {
-			System.out.println(s);
-		};
-		
-		List<Tutor> allTutors = new ArrayList<Tutor>();
-			Query allTutorsQuery = session.createQuery("from Tutor");
-		allTutors = allTutorsQuery.list();
-			
-		allTutors
-		.stream()
-		.forEach(printTutorsAndStudents);
-		
-		System.out.println("=============================");
-		List<Student> studentListFromDB = new ArrayList<Student>();
-		Query allStudents = session.createQuery("from Student");
-		studentListFromDB = allStudents.list();
-		
-		studentListFromDB
-		.stream()
-		.forEach(printStudentsAndTheirAllocatedTutors);
+	//	testDBRetrieval(session);
 			
 		// TEST OUTPUT from DB
 
@@ -117,9 +130,41 @@ public class HibernateTestHarness10 {
 		
 				
 				
-		tx.commit();
-		session.close();
+//		tx.commit();
+//		session.close();
 	} // ============== end of Main
+
+
+
+
+
+	private static void testDBRetrieval(Session session) throws HibernateException {
+		Consumer<Tutor> printTutorsAndStudents = t -> {
+			System.out.println("\nTutor : "+ t);
+			Set<Student> studentMap = t.getSupervisionGroup();
+			studentMap.forEach(s -> System.out.println(s));
+		};
+		Consumer<Student> printStudentsAndTheirAllocatedTutors = s -> {
+			System.out.println(s);
+		};
+		
+		List<Tutor> allTutors = new ArrayList<Tutor>();
+			Query allTutorsQuery = session.createQuery("from Tutor");
+		allTutors = allTutorsQuery.list();
+			
+		allTutors
+		.stream()
+		.forEach(printTutorsAndStudents);
+		
+		System.out.println("=============================");
+		List<Student> studentListFromDB = new ArrayList<Student>();
+		Query allStudents = session.createQuery("from Student");
+		studentListFromDB = allStudents.list();
+		
+		studentListFromDB
+		.stream()
+		.forEach(printStudentsAndTheirAllocatedTutors);
+	}
 
 	
 	

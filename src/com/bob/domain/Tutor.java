@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +24,7 @@ public class Tutor {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	
+	@Column(unique=true, nullable=false)
 	private String staffId;
 	private String name;
 	private int salary;
@@ -132,6 +134,31 @@ public class Tutor {
 
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((staffId == null) ? 0 : staffId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tutor other = (Tutor) obj;
+		if (staffId == null) {
+			if (other.staffId != null)
+				return false;
+		} else if (!staffId.equals(other.staffId))
+			return false;
+		return true;
 	}
 	
 	
