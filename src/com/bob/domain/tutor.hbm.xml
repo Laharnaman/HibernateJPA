@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bob.domain.Tutor">
+		<!-- same as @Id + @GeneratedValue(strategy=GenerationType.AUTO) -->
+		<id name="id" access="field">
+			<generator class="native" />
+		</id>
+		<!-- column="MY_STAFFID" also possible here -->
+		<property name="staffId" unique="true" access="field" />
+		<property name="name" access="field" />
+		<property name="salary" access="field" />
+
+		<set name="supervisionGroup" access="field" inverse="true">
+			<key column="TUTOR_FK"></key> <!-- order is important here!! key before one-to-many -->
+			<one-to-many class="com.bob.domain.Student"/>
+		</set>
+	</class>
+
+
+
+</hibernate-mapping>

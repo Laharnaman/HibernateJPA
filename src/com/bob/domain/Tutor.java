@@ -17,14 +17,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
-@Entity
+//@Entity
 public class Tutor {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+//	@Id
+//	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	
-	@Column(unique=true, nullable=false)
+//	@Column(unique=true, nullable=false)
 	private String staffId;
 	private String name;
 	private int salary;
@@ -32,10 +32,10 @@ public class Tutor {
 	// BI-DIRECTIONAL RELATIONSHIP SETUP
 	// 'mappedB' should really read: 'alreadyMappedBy'
 	//	It connects to the ManyToOne property on the Student table (basically saying they are the SAME relationship
-	@OneToMany(mappedBy="supervisor") 
+//	@OneToMany(mappedBy="supervisor") 
 	private Set<Student> supervisionGroup = new HashSet<Student>();
 	
-	@ManyToMany
+//	@ManyToMany
 	private Set<Subject> subjects;
 	
 	

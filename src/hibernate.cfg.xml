@@ -23,8 +23,11 @@
 		<property name="use_sql_comments">true</property>
 
 		<mapping class="com.bob.domain.Student" />
-		<mapping class="com.bob.domain.Tutor" />
+		
 		<mapping class="com.bob.domain.Subject" />
+		
+		<!--this is for annotation approach -> <mapping class="com.bob.domain.Tutor" /> -->
+		<mapping resource="com/bob/domain/tutor.hbm.xml"/>
 	</session-factory>
 
 

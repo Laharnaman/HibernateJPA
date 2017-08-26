@@ -36,26 +36,20 @@ public class HibernateTestHarness10 {
 
 		Tutor t1 = new Tutor("SID-04", "John von Neuman", 23456);
 		
-		/**
-		 * illustrates why using the db id as a comparison for equals is a bad idea
-		 * the following 3 objects would only result in 1 object being inserted into the Set!
-		 */
+		Tutor t2 = new Tutor("SID-05", "John von Neuman05", 23456);
 		Student s1 = new Student("John Kelly", "EID-10-2015");
 		Student s2 = new Student("Jack Kelly", "EID-11-2014");
 		Student s3 = new Student("James Kelly", "EID-12-2016");
 		
 		t1.addStudentsToSupervisionGroup(s1); 
 		t1.addStudentsToSupervisionGroup(s2);
-		t1.addStudentsToSupervisionGroup(s3);
+		t2.addStudentsToSupervisionGroup(s3);
 		
-		Set<Student> allStudents = t1.getSupervisionGroup();
-		allStudents.stream().forEach(s -> System.out.println(s));
-		System.out.println("\n\n>>>"+ allStudents.size());
+		session.save(t1);
+		session.save(t2);
 		session.save(s1);
 		session.save(s2);
 		session.save(s3);
-		session.save(t1);
-		
 		tx.commit();
 		session.close();
 		
