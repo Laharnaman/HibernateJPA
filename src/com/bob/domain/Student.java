@@ -3,6 +3,7 @@ package com.bob.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import com.bob.domain.*;
 
 /**
  * Represents a Student enrolled in the college management
@@ -33,7 +35,7 @@ public class Student
     @JoinColumn(name="TUTOR_FK")
     private Tutor supervisor; 
     
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.PERSIST)
     private Set<Subject> subjects = new HashSet<Subject>();
    
     /*

@@ -58,6 +58,7 @@ public class Utils {
 		updatedTutorList.add(tutor_mills.get());
 		updatedTutorList.add(tutor_feynman.get());
 		updatedTutorList.add(tutor_heisenberg.get());
+		updatedTutorList.add(tutor_wigner.get());
 
 		return updatedTutorList;
 

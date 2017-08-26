@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,10 +33,11 @@ public class Tutor {
 	// BI-DIRECTIONAL RELATIONSHIP SETUP
 	// 'mappedB' should really read: 'alreadyMappedBy'
 	//	It connects to the ManyToOne property on the Student table (basically saying they are the SAME relationship
-	@OneToMany(mappedBy="supervisor") 
+	
+	@OneToMany(mappedBy="supervisor", cascade=CascadeType.PERSIST) 
 	private Set<Student> supervisionGroup = new HashSet<Student>();
 	
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.PERSIST)
 	private Set<Subject> subjects;
 	
 	

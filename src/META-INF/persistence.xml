@@ -8,7 +8,7 @@
                      transaction-type="RESOURCE_LOCAL">
       <properties>         
 	     <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/MyDB"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/MyDB?createDatabaseIfNotExist=true"/>
          <property name="connection.username" value="root"/>
 		<property name="connection.password" value=""/>
 		
