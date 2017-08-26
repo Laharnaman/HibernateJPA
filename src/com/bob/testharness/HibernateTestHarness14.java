@@ -25,7 +25,7 @@ import com.bob.domain.Subject;
 import com.bob.domain.Tutor;
 import com.bob.utils.Utils;
 
-public class HibernateTestHarness10 {
+public class HibernateTestHarness14 {
 
 	private static SessionFactory sessionFactory;
 

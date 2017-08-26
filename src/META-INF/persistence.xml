@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+               
+   <persistence-unit name="JPA_MYSQL_CONFIG" 
+                     transaction-type="RESOURCE_LOCAL">
+      <properties>         
+	     <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+         <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/MyDB"/>
+         
+         <!--  tweak these to your own needs -->
+         <property name="hibernate.show_sql" value="false" />
+         <property name="hibernate.format_sql" value="false" />
+         <property name="hibernate.hbm2ddl.auto" value="create" />                  
+      </properties>    
+                      
+         <!-- we do not need user name and password for the course
+         <property name="hibernate.connection.username" value=""/>
+         <property name="hibernate.connection.password" value=""/>
+         -->                        
+   </persistence-unit>             
+</persistence>
+            
