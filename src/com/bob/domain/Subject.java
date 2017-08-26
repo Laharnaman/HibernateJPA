@@ -51,7 +51,7 @@ public class Subject {
 
 	@Override
 	public String toString() {
-		return "Subject [subject=" + subject + ", noOfSemesters=" + noOfSemesters + "]";
+		return subject + "(" + noOfSemesters +")";
 	}
 
 	@Override

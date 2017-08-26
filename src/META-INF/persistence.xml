@@ -7,13 +7,16 @@
    <persistence-unit name="JPA_MYSQL_CONFIG" 
                      transaction-type="RESOURCE_LOCAL">
       <properties>         
-	     <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-         <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/MyDB"/>
-         
+	     <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/MyDB"/>
+         <property name="connection.username" value="root"/>
+		<property name="connection.password" value=""/>
+		
          <!--  tweak these to your own needs -->
          <property name="hibernate.show_sql" value="false" />
          <property name="hibernate.format_sql" value="false" />
-         <property name="hibernate.hbm2ddl.auto" value="create" />                  
+         <property name="hibernate.hbm2ddl.auto" value="create" />
+         <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />                  
       </properties>    
                       
          <!-- we do not need user name and password for the course

@@ -43,13 +43,24 @@ public class Tutor {
 	Tutor() {}
 
 	//business constructor
-	public Tutor(String staffId, String name, int salary) {
+		public Tutor(String staffId, String name, int salary) {
+			super();
+			this.staffId = staffId;
+			this.name = name;
+			this.salary = salary;
+			this.supervisionGroup = new HashSet<Student>(); 
+			this.subjects = new HashSet<Subject>();
+		}
+		
+		
+	//business constructor
+	public Tutor(String staffId, String name, int salary, Set<Subject> subjects) {
 		super();
 		this.staffId = staffId;
 		this.name = name;
 		this.salary = salary;
 		this.supervisionGroup = new HashSet<Student>(); 
-		this.subjects = new HashSet<Subject>();
+		this.subjects = subjects;
 	}
 
 	public Tutor(String name) {
@@ -87,7 +98,7 @@ public class Tutor {
 		String students =  this.getSupervisionGroup().toString();
 		String subjects =  this.getSubjects().toString();
 				
-		return "Tutor [ " + id + ", " + staffId + ", " + name +", " + salary + " ]" 
+		return name + "(" +staffId + ") " + salary 
 				+"\nTUTOR'S STUDENTS: " + students
 				+"\nTUTOR'S SUBJECTS: " + subjects+ "\n";
 	}

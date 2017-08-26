@@ -66,6 +66,13 @@ public class Student
     	this.subjects=subjects;
     }
     
+    public Student(String enrollmentId, String name, Set<Subject> subjects)
+    {
+    	this.enrollmentID=enrollmentId;
+    	this.name = name;
+    	this.subjects=subjects;
+    }
+    
     public Student(String name, String enrollmentID)
     {
     	this.name = name;
@@ -75,9 +82,9 @@ public class Student
     
     @Override
 	public String toString() {
-    	String subjects = " SUBJECTS: [" + this.getSubjects().toString() + " ]";
-		return "Student [  " + enrollmentID + ", " + name + " ]" 
-    			+ " Tutor is: " + "[ "+ supervisor.getName() + "  ]"
+    	String subjects = this.getSubjects().toString() ;
+		return  name + "("+enrollmentID + ")"
+    			+ " Tutor is: "+ supervisor.getName() 
     			+ subjects;
 	//	return "Student [enrollmentID=" + enrollmentID + ", name=" + name  + "]";
 	}

@@ -28,14 +28,27 @@ public class Utils {
 
 		Optional<Tutor> tutor_mills = tutors.stream().filter(t -> t.getName().toLowerCase().contains("mills"))
 				.findFirst();
+		
+		Optional<Tutor> tutor_wigner = tutors.stream().filter(t -> t.getName().toLowerCase().contains("wigner"))
+				.findFirst();
+		
+		
 		List<Student> millars = students.stream().filter(s -> s.getName().toLowerCase().contains("millar"))
 				.collect(Collectors.toList());
 
 		for (Student s : kellys) {
-			tutor_heisenberg.get().addStudentsToSupervisionGroup(s);
+			if(s.getName().toLowerCase().contains("bob")) {
+				tutor_wigner.get().addStudentsToSupervisionGroup(s);
+			} else {
+				tutor_heisenberg.get().addStudentsToSupervisionGroup(s);
+			}
 		}
 		for (Student s : mccreadys) {
-			tutor_feynman.get().addStudentsToSupervisionGroup(s);
+			if(s.getName().toLowerCase().contains("karen")) {
+				tutor_wigner.get().addStudentsToSupervisionGroup(s);
+			} else {
+				tutor_feynman.get().addStudentsToSupervisionGroup(s);
+			}
 		}
 		for (Student s : millars) {
 			tutor_mills.get().addStudentsToSupervisionGroup(s);
@@ -61,6 +74,9 @@ public class Utils {
 		Optional<Tutor> tutor_mills = tutors.stream().filter(t -> t.getName().toLowerCase().contains("mills"))
 				.findFirst();
 		
+		Optional<Tutor> tutor_wigner = tutors.stream().filter(t -> t.getName().toLowerCase().contains("wigner"))
+				.findFirst();
+		
 		// Students by name
 		List<Student> millars = students.stream().filter(s -> s.getName().toLowerCase().contains("millar"))
 				.collect(Collectors.toList());
@@ -72,10 +88,20 @@ public class Utils {
 		
 		//Assign a specific tutor to each student with the name 'kelly'
 		for (Student s : kellys) {
-			s.allocateSupervisor(tutor_heisenberg.get());
+			
+			if(s.getName().toLowerCase().contains("bob")) {
+				s.allocateSupervisor(tutor_wigner.get());
+			} else {
+				s.allocateSupervisor(tutor_heisenberg.get());
+			}
 		}
 		for (Student s : mccreadys) {
-			s.allocateSupervisor(tutor_feynman.get());
+			
+			if(s.getName().toLowerCase().contains("karen")) {
+				s.allocateSupervisor(tutor_wigner.get());
+			} else {
+				s.allocateSupervisor(tutor_feynman.get());
+			}
 		}
 		for (Student s : millars) {
 			s.allocateSupervisor(tutor_mills.get());
@@ -92,43 +118,55 @@ public class Utils {
 	}
 
 	public static Set<Student> generateSampleSetOfStudents(Map<String,Subject> subjects) {
+		int minEID=2000;
+		int maxEID=5000;
+		Random r = new Random();
 		Set<Student> students = new HashSet<Student>();
 		
 		Set<Subject> kelly_heisenberg_subjects = new HashSet<Subject>();
 		Set<Subject> millar_mills_subjects = new HashSet<Subject>();
 		Set<Subject> mcready_feynman_subjects = new HashSet<Subject>();
+		Set<Subject> wigner_subjects = new HashSet<Subject>();
 		
 		kelly_heisenberg_subjects.add(subjects.get("QUA"));
 		kelly_heisenberg_subjects.add(subjects.get("MAT"));
 		millar_mills_subjects.add(subjects.get("GUT"));
 		millar_mills_subjects.add(subjects.get("COS"));
 		mcready_feynman_subjects.add(subjects.get("MHL"));
+		wigner_subjects.add(subjects.get("STA"));
 		
-		students.add(new Student("Aaron McCready", mcready_feynman_subjects));
-		students.add(new Student("Bob Kelly", kelly_heisenberg_subjects));
-		students.add(new Student("Erinn Kelly",kelly_heisenberg_subjects));
-		students.add(new Student("Emma Kelly",kelly_heisenberg_subjects));
-		students.add(new Student("Karen McCready",mcready_feynman_subjects));
-		students.add(new Student("Kristin Millar",millar_mills_subjects));
-		students.add(new Student("Ryan Millar",millar_mills_subjects));
-		students.add(new Student("Joy Millar",millar_mills_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),  "Aaron McCready", 	mcready_feynman_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Bob Kelly", 		wigner_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Erinn Kelly",		kelly_heisenberg_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Emma Kelly",		kelly_heisenberg_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Karen McCready",	wigner_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Kristin Millar",	millar_mills_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Ryan Millar",		millar_mills_subjects));
+		students.add(new Student("EID-" + createRandom(minEID, maxEID, r),	"Joy Millar",		millar_mills_subjects));
 		
-		int i = 1;
+		/*int i = 1;
 		for (Student s : students) {
 			s.setEnrollmentID(s.getName().substring(0,3).toUpperCase()+"-" + (i++) + "-2017");
-		}
+		}*/
 		return students;
 
+	}
+
+	private static int createRandom(int minEID, int maxEID, Random r) {
+		return r.nextInt((maxEID - minEID) + 1) + minEID;
 	}
 
 	public static Set<Tutor> generateSampleSetOfTutors(Map<String,Subject> subjects) {
 		int min = 50000;
 		int max = 90000;
+		int minStaffId=100;
+		int maxStaffId=199;
 		Random r = new Random();
 		//Map<String,Subject> subjects = generateSampleMapOfSubjects();
 		Set<Subject> feyman_subjects = new HashSet<Subject>();
 		Set<Subject> mills_subjects = new HashSet<Subject>();
 		Set<Subject> heisenberg_subjects = new HashSet<Subject>();
+		Set<Subject> wigner_subjects = new HashSet<Subject>();
 		
 		feyman_subjects.add(subjects.get("QED"));
 		feyman_subjects.add(subjects.get("MHL"));
@@ -140,19 +178,18 @@ public class Utils {
 		heisenberg_subjects.add(subjects.get("QUA"));
 		heisenberg_subjects.add(subjects.get("MAT"));
 		
+		wigner_subjects.add(subjects.get("STA"));
+		wigner_subjects.add(subjects.get("COS"));
+		
 		Set<Tutor> tutors = new HashSet<Tutor>();
-		tutors.add(new Tutor("Richard Feynman", feyman_subjects ));
-		tutors.add(new Tutor("Randell Mills", mills_subjects));
-		tutors.add(new Tutor("Werner Heisenberg", heisenberg_subjects));
-
-		int i = 0;
-
-		for (Tutor t : tutors) {
-			t.setStaffId("SID-" + (i++));
-			t.setSalary(r.nextInt((max - min) + 1) + min);
-			
-		}
-
+	
+//use constructor public Tutor(String staffId, String name, int salary, Set<Subject> subjects) {
+		
+		tutors.add(new Tutor("SID-" + createRandom(minStaffId, maxStaffId, r),	"Richard Feynman",		createRandom(min, max, r),	feyman_subjects));
+		tutors.add(new Tutor("SID-" + createRandom(minStaffId, maxStaffId, r),	"Randell Mills",		createRandom(min, max, r),	mills_subjects));
+		tutors.add(new Tutor("SID-" + createRandom(minStaffId, maxStaffId, r),	"Werner Heisenberg",	createRandom(min, max, r),	heisenberg_subjects));
+		tutors.add(new Tutor("SID-" + createRandom(minStaffId, maxStaffId, r),	"Eugene Wigner",		createRandom(min, max, r),	wigner_subjects));
+		
 		return tutors;
 	}
 
@@ -166,6 +203,7 @@ public class Utils {
 		subjectMap.put("COS", new Subject("Cosmology", 3 ));
 		subjectMap.put("QUA", new Subject("Quantum Mechanics", 3 ));
 		subjectMap.put("MAT", new Subject("Matrix Mechanics", 3 ));
+		subjectMap.put("STA", new Subject("Statistical Mechanics", 3 ));
 		
 		return subjectMap;
 	}
@@ -179,6 +217,8 @@ public class Utils {
 		set.add(generateSampleMapOfSubjects().get("ELE"));
 		set.add(generateSampleMapOfSubjects().get("COS"));
 		set.add(generateSampleMapOfSubjects().get("QUA"));
+		set.add(generateSampleMapOfSubjects().get("MAT"));
+		set.add(generateSampleMapOfSubjects().get("STA"));
 		
 		return set;
 	}
