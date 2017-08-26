@@ -31,33 +31,20 @@ public class JPATestHarness {
 		// START NEW DATA GENERATION and test
 			
 				Set<Subject> subjects = generateSampleSetOfSubjects();
-				Map<String, Subject> subjectMap = generateSampleMapOfSubjects(); //might already be in DB - check!
-		
-				/*	Not needed if using cascade=CascadeType.PERSIST	
-				 * 	for (Subject s : subjectMap.values()) {
-					em.persist(s);
-				}*/
-				
+				Map<String, Subject> subjectMap = generateSampleMapOfSubjects();
 				Set<Student> students = generateSampleSetOfStudents(subjectMap);
-		/*		Not needed if using cascade=CascadeType.PERSIST 
-		 * 		for (Student s : students) {
-					em.persist(s);
-				}	*/
-				
 				Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
 				tutors = assignStudentsToTutors(students, tutors);
 				
 				for (Tutor t : tutors) {
 					em.persist(t);
 				}
-				
 	
 				testDBRetrieval(em);
 	
+				
 				tx.commit();
 				em.close();
-		// END SAVE
-				
 
 	} // ============== end of Main
 

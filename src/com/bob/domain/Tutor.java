@@ -34,6 +34,7 @@ public class Tutor {
 	// 'mappedB' should really read: 'alreadyMappedBy'
 	//	It connects to the ManyToOne property on the Student table (basically saying they are the SAME relationship
 	
+	// ensures deletion of associated students. NOT WISE!. @OneToMany(mappedBy="supervisor", cascade={CascadeType.PERSIST, CascadeType.REMOVE}) 
 	@OneToMany(mappedBy="supervisor", cascade=CascadeType.PERSIST) 
 	private Set<Student> supervisionGroup = new HashSet<Student>();
 	
