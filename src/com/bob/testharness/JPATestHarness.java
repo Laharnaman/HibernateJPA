@@ -17,6 +17,8 @@ import javax.persistence.Query;
 import com.bob.domain.Student;
 import com.bob.domain.Subject;
 import com.bob.domain.Tutor;
+import com.bob.utils.Utils;
+
 import static com.bob.utils.Utils.*;
 
 public class JPATestHarness {
@@ -27,10 +29,26 @@ public class JPATestHarness {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		
-
-		// START NEW DATA GENERATION and test
-			
-				Set<Subject> subjects = generateSampleSetOfSubjects();
+		Set<Subject> subjects = generateSampleSetOfSubjects();
+		Map<String, Subject> subjectMap = generateSampleMapOfSubjects();
+		Set<Student> students = generateSampleSetOfStudents(subjectMap);
+		Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
+		tutors = assignStudentsToTutors(students, tutors);
+		
+		Tutor t1 = Utils.createTestTutor();	
+		Student s1 = Utils.createFullTestStudent();
+		Student s2 = Utils.createTestStudentWithEIDAndName();
+		t1.addStudentsToSupervisionGroup(s1);
+		t1.addStudentsToSupervisionGroup(s2);
+		/**
+		 * TODO: modify Student so that a FK points to the subject. Subject table is unique, so we can't add same Subjects for each student.
+		 */
+		//System.out.println(t1);
+		em.persist(t1); 
+		testDBRetrieval(em);
+		
+		// START NEW DATA GENERATION and test		
+/*				Set<Subject> subjects = generateSampleSetOfSubjects();
 				Map<String, Subject> subjectMap = generateSampleMapOfSubjects();
 				Set<Student> students = generateSampleSetOfStudents(subjectMap);
 				Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
@@ -41,7 +59,8 @@ public class JPATestHarness {
 				}
 	
 				testDBRetrieval(em);
-	
+*/
+		// END NEW DATA GENERATION and test			
 				
 				tx.commit();
 				em.close();

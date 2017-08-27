@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,6 +39,9 @@ public class Student
     @ManyToMany(cascade=CascadeType.PERSIST)
     private Set<Subject> subjects = new HashSet<Subject>();
    
+    @Embedded
+    private Address address;
+    
     /*
      * Hibernate needs this.
      */
@@ -75,20 +79,31 @@ public class Student
     	this.subjects=subjects;
     }
     
-    public Student(String name, String enrollmentID)
+    public Student( String enrollmentID, String name)
+    {
+    	this.enrollmentID=enrollmentID;
+    	this.name = name;
+    	this.supervisor  = null;
+    }
+    
+    public Student(String name, String enrollmentID, String street, String city, String zipOrPostcode)
     {
     	this.name = name;
     	this.enrollmentID=enrollmentID;
     	this.supervisor  = null;
+    	this.address= new Address(street,city,zipOrPostcode);
     }
+    
+   
     
     @Override
 	public String toString() {
     	String subjects = this.getSubjects().toString() ;
-		return  name + "("+enrollmentID + ")"
-    			+ " Tutor is: "+ supervisor.getName() 
-    			+ subjects;
-	//	return "Student [enrollmentID=" + enrollmentID + ", name=" + name  + "]";
+		return  name 
+				+ "("+enrollmentID + ")"
+				+ " Majoring in: " + subjects
+				+ " Tutor is: "+ supervisor.getName()
+				+ " " + this.address;
 	}
 	public double calculateGradePointAverage()
     {
@@ -164,6 +179,12 @@ public class Student
 		} else if (!enrollmentID.equals(other.enrollmentID))
 			return false;
 		return true;
+	}
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 	
 	

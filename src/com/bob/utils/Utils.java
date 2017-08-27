@@ -8,7 +8,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.bob.domain.Address;
 import com.bob.domain.Student;
 import com.bob.domain.Subject;
 import com.bob.domain.Tutor;
@@ -194,6 +196,22 @@ public class Utils {
 		return tutors;
 	}
 
+	
+	public static Tutor createTestTutor() {
+		Map<String,Subject> subjects = generateSampleMapOfSubjects();
+		Set<Subject> selectedSubjects = subjects
+						.values()
+						.stream()
+						.filter(sub -> sub.getNoOfSemesters() == 1)
+						.collect(Collectors.toSet());
+		Tutor result  = new Tutor("EXTID-" 
+						+ createRandom(1000, 2000, new Random()),	
+						"Louis De Broglie-"+createRandom(0, 2000, new Random()) ,		
+						createRandom(100000, 200000, new Random()),	
+						selectedSubjects);
+		return result;
+	}
+	
 	public static Map<String, Subject> generateSampleMapOfSubjects() {
 		Map<String,Subject> subjectMap = new HashMap<String,Subject>();
 		
@@ -202,7 +220,7 @@ public class Utils {
 		subjectMap.put("GUT", new Subject("GUT-CP", 3 ));
 		subjectMap.put("ELE", new Subject("Electromagnetism", 2 ));
 		subjectMap.put("COS", new Subject("Cosmology", 3 ));
-		subjectMap.put("QUA", new Subject("Quantum Mechanics", 3 ));
+		subjectMap.put("QUA", new Subject("Quantum Mechanics", 1 ));
 		subjectMap.put("MAT", new Subject("Matrix Mechanics", 3 ));
 		subjectMap.put("STA", new Subject("Statistical Mechanics", 3 ));
 		
@@ -223,7 +241,38 @@ public class Utils {
 		
 		return set;
 	}
+
+	public static Student createFullTestStudent() {
+		Map<String,Subject> subjects = generateSampleMapOfSubjects();
+		Set<Subject> selectedSubjects = subjects
+						.values()
+						.stream()
+						.filter(sub -> sub.getNoOfSemesters() == 3)
+						.collect(Collectors.toSet());
+		Student s = new Student("EID-" + createRandom(100, 199, new Random()),  
+							"Raymond Kelly-"+createRandom(100, 199, new Random()) ,
+							 selectedSubjects);
+		s.setAddress(new Address( createRandom(50, 199, new Random()) + " Mundenheimerstr", "Ludwigshafen", "67123"));
+	
+		return s;
+	}
 	
 
+	public static Student createTestStudentWithAddress() {
+		
+		Student s = new Student("EID-" + createRandom(100, 199, new Random()),  
+							"Patrick Kelly-"+createRandom(100, 199, new Random()));
+		s.setAddress(new Address( createRandom(50, 199, new Random()) + " Maxstr", "Ludwigshafen", "67000"));
+	
+		return s;
+	}
+	
+public static Student createTestStudentWithEIDAndName() {
+		
+		Student s = new Student("EID-" + createRandom(100, 199, new Random()),  
+							"Patrick Kelly-"+createRandom(100, 199, new Random()));
+	
+		return s;
+	}
 	
 }

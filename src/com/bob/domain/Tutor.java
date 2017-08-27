@@ -82,6 +82,8 @@ public class Tutor {
 		this.name=name;
 	}
 
+
+
 	public void addStudentsToSupervisionGroup(Student s){
 		this.supervisionGroup.add(s);
 		s.allocateSupervisor(this); // shortcut to implementing a more robust bi-directional relationship
@@ -103,7 +105,7 @@ public class Tutor {
 				
 		return name + "(" +staffId + ") " + salary 
 				+"\nTUTOR'S STUDENTS: " + students
-				+"\nTUTOR'S SUBJECTS: " + subjects+ "\n";
+				+"\nTUTOR'S SPECIALITIES: " + subjects+ "\n";
 	}
 
 	public String getName() {
