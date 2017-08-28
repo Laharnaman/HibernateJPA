@@ -60,26 +60,24 @@ public class JPATestHarness {
 		
 		/**
 		 * list of all tutors who have a student that lives in georgia
+		 * using fluent api
 		 */
 		String thecity = "Georgia";
 		
-		Query tutorsG = em.createQuery("select distinct tutor from Tutor tutor "
+				em.createQuery("select distinct tutor from Tutor tutor "
 									+ "join tutor.supervisionGroup as student "
-									+ "where student.address.city =:city");
-		tutorsG.setParameter("city", thecity);
-		List<Tutor> results = tutorsG.getResultList();
-		for(Tutor t:results){
-			System.out.println(t);
-		}
+									+ "where student.address.city =:city")
+				.setParameter("city", thecity)
+				.getResultList()
+				.stream()
+				.forEach(System.out::println);
+		
 		//Alternative to above without using join.
-		/*Query q3 = em.createQuery("select distinct student.supervisor from Student as student where student.address.city=:city");
-		List<Tutor> ltut = q3.getResultList();
-		for(Tutor t: ltut) {
-			System.out.println(t);
-		}*/
-		
-		//_resultList.stream().collect(Collectors.toList()).forEach(System.out::println);
-		
+		em.createQuery("select distinct student.supervisor from Student as student where student.address.city=:city")
+		.setParameter("city", thecity)
+		.getResultList()
+		.stream()
+		.forEach(System.out::println);
 		
 		
 		tx.commit();
