@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,15 +27,58 @@ public class JPATestHarness {
 		tx.begin();
 		
 		// let's do some queries!
+
+		Tutor tutor = em.find(Tutor.class, 1);
+		//Query q = em.createQuery("from Student as student where student.supervisor=:tutor");
 		
-		//TypedQuery<Student> q = em.createQuery("from Student", Student.class); //takes care of generic warnings
-		
-		String requiredName="marco fortes";
-		Query q = em.createQuery("from Student as student where lower(student.name) =  :name");
+		String requiredName="Georgia";
+		//Query q = em.createQuery("from Student as student where student.supervisor.name=:name");
+		Query q = em.createQuery("from Student as student where student.address.city=:name");
 		q.setParameter("name", requiredName);
-	//	System.out.println(q.getSingleResult());
-		List<Student> allStudents = q.getResultList();
-		allStudents.stream().forEach(System.out::println);
+		
+		Query q2 = em.createQuery("from Tutor as tutor where tutor.supervisionGroup is not empty");
+		
+		List<Tutor> tutors = q2.getResultList();
+		//tutors.stream().forEach(System.out::println);
+		
+		Subject history = em.find(Subject.class, 1);	
+		Query qHistory = em.createQuery("from Tutor as tutor where :subject member of tutor.subjectsQualifiedToTeach");
+		qHistory.setParameter("subject", history);
+		List<Tutor> tutorsForHistory = qHistory.getResultList();
+		tutorsForHistory.stream().forEach(System.out::println);
+		
+		/**
+		 * list of all students whose supervisor can teach science
+		 */
+		Subject subject = em.find(Subject.class, 2);	
+		Query qScience = em.createQuery("from Student as student where :subject member of student.supervisor.subjectsQualifiedToTeach");
+		qScience.setParameter("subject", subject);
+		List<Student> s = qScience.getResultList();
+//		s.stream().forEach(System.out::println);
+//		List<Student> allStudents = q.getResultList();
+//		allStudents.stream().forEach(System.out::println);
+		
+		/**
+		 * list of all tutors who have a student that lives in georgia
+		 */
+		String thecity = "Georgia";
+		
+		Query tutorsG = em.createQuery("select distinct tutor from Tutor tutor "
+									+ "join tutor.supervisionGroup as student "
+									+ "where student.address.city =:city");
+		tutorsG.setParameter("city", thecity);
+		List<Tutor> results = tutorsG.getResultList();
+		for(Tutor t:results){
+			System.out.println(t);
+		}
+		//Alternative to above without using join.
+		/*Query q3 = em.createQuery("select distinct student.supervisor from Student as student where student.address.city=:city");
+		List<Tutor> ltut = q3.getResultList();
+		for(Tutor t: ltut) {
+			System.out.println(t);
+		}*/
+		
+		//_resultList.stream().collect(Collectors.toList()).forEach(System.out::println);
 		
 		
 		
@@ -71,13 +115,13 @@ public class JPATestHarness {
 		// This tutor is the only tutor who can teach History
 		Tutor t3 = new Tutor("GHI678", "Linda Histroia", 0);
 		t3.addSubjectToQualifications(history);
-		
+		t3.addSubjectToQualifications(science);
 		em.persist(t1);
 		em.persist(t2);
 		em.persist(t3);
 
 		// this only works because we are cascading from tutor to student
-		t1.createStudentAndAddToSupervisionGroup("Marco Fortes", "1-FOR-2010", "1 The Street", "Anytown", "484848");
+		t1.createStudentAndAddToSupervisionGroup("Marco Fortes", "1-FOR-2010", "1 The Street", "Georgia", "484848");
 		t1.createStudentAndAddToSupervisionGroup("Kath Grainer", "2-GRA-2009", "2 Kaths Street", "Georgia", "939393");
 		t3.createStudentAndAddToSupervisionGroup("Sandra Perkins", "3-PER-2009", "4 The Avenue", "Georgia", "939393");
 		
