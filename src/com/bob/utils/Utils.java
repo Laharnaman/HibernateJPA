@@ -183,7 +183,7 @@ public class Utils {
 		
 		wigner_subjects.add(subjects.get("STA"));
 		wigner_subjects.add(subjects.get("COS"));
-		
+		wigner_subjects.add(subjects.get("QUA"));
 		Set<Tutor> tutors = new HashSet<Tutor>();
 	
 //use constructor public Tutor(String staffId, String name, int salary, Set<Subject> subjects) {
@@ -215,14 +215,14 @@ public class Utils {
 	public static Map<String, Subject> generateSampleMapOfSubjects() {
 		Map<String,Subject> subjectMap = new HashMap<String,Subject>();
 		
-		subjectMap.put("QED", new Subject("Quantum Electrodynamics", 3 ));
-		subjectMap.put("MHL", new Subject("Mechanics, Heat and Light", 1 ));
-		subjectMap.put("GUT", new Subject("GUT-CP", 3 ));
-		subjectMap.put("ELE", new Subject("Electromagnetism", 2 ));
-		subjectMap.put("COS", new Subject("Cosmology", 3 ));
-		subjectMap.put("QUA", new Subject("Quantum Mechanics", 1 ));
-		subjectMap.put("MAT", new Subject("Matrix Mechanics", 3 ));
-		subjectMap.put("STA", new Subject("Statistical Mechanics", 3 ));
+		subjectMap.put("QED", new Subject("Quantum Electrodynamics","QED", 3 ));
+		subjectMap.put("MHL", new Subject("Mechanics, Heat and Light", "MHL", 1 ));
+		subjectMap.put("GUT", new Subject("GUT-CP", "GUT",3 ));
+		subjectMap.put("ELE", new Subject("Electromagnetism", "ELE",2 ));
+		subjectMap.put("COS", new Subject("Cosmology", "COS",3 ));
+		subjectMap.put("QUA", new Subject("Quantum Mechanics", "QUA", 1 ));
+		subjectMap.put("MAT", new Subject("Matrix Mechanics",  "MAT", 3 ));
+		subjectMap.put("STA", new Subject("Statistical Mechanics", "STA", 3 ));
 		
 		return subjectMap;
 	}
@@ -244,14 +244,13 @@ public class Utils {
 
 	public static Student createFullTestStudent() {
 		Map<String,Subject> subjects = generateSampleMapOfSubjects();
-		Set<Subject> selectedSubjects = subjects
-						.values()
-						.stream()
-						.filter(sub -> sub.getNoOfSemesters() == 3)
-						.collect(Collectors.toSet());
+//		Set<Subject> selectedSubjects = subjects
+//						.values()
+//						.stream()
+//						.filter(sub -> sub.getNoOfSemesters() == 3)
+//						.collect(Collectors.toSet());
 		Student s = new Student("EID-" + createRandom(100, 199, new Random()),  
-							"Raymond Kelly-"+createRandom(100, 199, new Random()) ,
-							 selectedSubjects);
+							"Raymond Kelly-"+createRandom(100, 199, new Random()));
 		s.setAddress(new Address( createRandom(50, 199, new Random()) + " Mundenheimerstr", "Ludwigshafen", "67123"));
 	
 		return s;

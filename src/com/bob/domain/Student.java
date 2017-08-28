@@ -1,8 +1,5 @@
 package com.bob.domain;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,10 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import com.bob.domain.*;
 
 /**
  * Represents a Student enrolled in the college management
@@ -23,89 +17,49 @@ import com.bob.domain.*;
 @Entity
 public class Student
 {
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
-	
+
 	@Column(unique=true, nullable=false)
-    private String enrollmentID;
+	private String enrollmentID;
     private String name;
-   
-    @ManyToOne
+    
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name="TUTOR_FK")
     private Tutor supervisor; 
     
-    @ManyToMany(cascade=CascadeType.PERSIST)
-    private Set<Subject> subjects = new HashSet<Subject>();
-   
     @Embedded
     private Address address;
-    
+           
     /*
-     * Hibernate needs this.
+     * Required by Hibernate
      */
-    public Student() {
-    	
-    }
-    /**
-     * Initialises a student with a particular tutor
-     */
-    public Student(String name, Tutor tutor)
+    public Student()
     {
-    	this.name = name;
-    	this.supervisor = tutor;
+    	
     }
     
     /**
      * Initialises a student with no pre set tutor
      */
-    public Student(String name)
+    public Student(String name, String enrollmentID, String street, 
+    		       String city, String zipOrPostcode)
     {
     	this.name = name;
-//    	this.supervisor  = null;
+    	this.enrollmentID = enrollmentID;
+    	this.supervisor = null;
+     	this.address = new Address(street, city, zipOrPostcode);
     }
     
-    public Student(String name, Set<Subject> subjects)
+    public Student(String name, String enrollmentId)
     {
     	this.name = name;
-    	this.subjects=subjects;
+    	this.enrollmentID = enrollmentId;
+    	this.address = null;
     }
     
-    public Student(String enrollmentId, String name, Set<Subject> subjects)
-    {
-    	this.enrollmentID=enrollmentId;
-    	this.name = name;
-    	this.subjects=subjects;
-    }
-    
-    public Student( String enrollmentID, String name)
-    {
-    	this.enrollmentID=enrollmentID;
-    	this.name = name;
-    	this.supervisor  = null;
-    }
-    
-    public Student(String name, String enrollmentID, String street, String city, String zipOrPostcode)
-    {
-    	this.name = name;
-    	this.enrollmentID=enrollmentID;
-    	this.supervisor  = null;
-    	this.address= new Address(street,city,zipOrPostcode);
-    }
-    
-   
-    
-    @Override
-	public String toString() {
-    	String subjects = this.getSubjects().toString() ;
-		return  name 
-				+ "("+enrollmentID + ")"
-				+ " Majoring in: " + subjects
-				+ " Tutor is: "+ supervisor.getName()
-				+ " " + this.address;
-	}
-	public double calculateGradePointAverage()
+    public double calculateGradePointAverage()
     {
     	// some complex business logic!
     	// we won't need this method on the course, BUT it is import
@@ -113,57 +67,56 @@ public class Student
     	// business logic in here as well.
     	return 0;
     }
-	
-	/*
-	 * Putting a @Id annotation on a method would 
-	 * tell hibernate to use property access rather than field(via reflection).
-	 * These two techniques cannot be mixed within a class.
-	 * A single annotation will INCLUDE ALL! the other accessors as hibernate's 
-	 * default access method
-	 */
-	
-	public int getId() {
-		return id;
+    
+    public void allocateSupervisor(Tutor newSupervisor)
+    {
+    	this.supervisor = newSupervisor;
+    	newSupervisor.getModifiableSupervisionGroup().add(this);
+    }
+        
+    public String getSupervisorName()
+    {
+    	return this.supervisor.getName();
+    }
+    
+    public String toString()
+    {
+    	return this.name + " lives at: " + this.address;
+    }
+    
+    public int getId()
+    {
+    	return this.id;
+    }
+
+	public String getEnrollmentId()
+	{
+		return this.enrollmentID;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getEnrollmentID() {
-		return enrollmentID;
-	}
-	public void setEnrollmentID(String enrollmentID) {
-		this.enrollmentID = enrollmentID;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name.toUpperCase();
-	}
-	public void allocateSupervisor(Tutor newSupervisor) {
-		this.supervisor=newSupervisor;
-		newSupervisor.getModifiableSupervisionGroup().add(this); // maintain bi-directional relationship.
-		
-	}
+
 	public Tutor getSupervisor() {
-		return supervisor;
+		return this.supervisor;
 	}
-	public void setSupervisor(Tutor supervisor) {
-		this.supervisor = supervisor;
+	
+	public void setAddress(Address newAddress)
+	{
+		this.address = newAddress;
 	}
-	public Set<Subject> getSubjects() {
-		return subjects;
+	
+	public Address getAddress()
+	{
+		return this.address;
 	}
-	public void setSubjects(Set<Subject> subjects) {
-		this.subjects = subjects;
-	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((enrollmentID == null) ? 0 : enrollmentID.hashCode());
+		result = prime * result
+				+ ((enrollmentID == null) ? 0 : enrollmentID.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -180,13 +133,8 @@ public class Student
 			return false;
 		return true;
 	}
-	public Address getAddress() {
-		return address;
-	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-	
-	
-	
+
+
+
+
 }

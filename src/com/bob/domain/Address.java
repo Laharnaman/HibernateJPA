@@ -3,47 +3,37 @@ package com.bob.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-/**
- * The private fields will appear in other tables--not in a dedicated Address table!
- * @author Bob
- *
- */
 @Embeddable
-public class Address {
-
+public class Address 
+{
 	private String street;
 	private String city;
-	@Column(name="zip_or_postcode")
+	
+	@Column(name="ZIP_OR_POSTCODE")
 	private String zipOrPostcode;
 	
 	public Address() {}
 	
-	public Address(String street, String city, String zipOrPostcode) {
-		super();
+	public Address(String street, String city, String zipOrPostcode)
+	{
 		this.street = street;
 		this.city = city;
 		this.zipOrPostcode = zipOrPostcode;
 	}
-
 	
-	
-	
-	
-	
-
-	@Override
-	public String toString() {
-		return "Address [street=" + street + ", city=" + city + ", zipOrPostcode=" + zipOrPostcode + "]";
+	public String toString()
+	{
+		return this.street + ", " + this.city + ", " + this.zipOrPostcode;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((street == null) ? 0 : street.hashCode());
-		result = prime * result + ((zipOrPostcode == null) ? 0 : zipOrPostcode.hashCode());
+		result = prime * result
+				+ ((zipOrPostcode == null) ? 0 : zipOrPostcode.hashCode());
 		return result;
 	}
 

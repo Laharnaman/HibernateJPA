@@ -1,10 +1,7 @@
 package com.bob.domain;
-
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,14 +10,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Tutor {
-
+public class Tutor 
+{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
@@ -30,126 +25,63 @@ public class Tutor {
 	private String name;
 	private int salary;
 	
-	// BI-DIRECTIONAL RELATIONSHIP SETUP
-	// 'mappedB' should really read: 'alreadyMappedBy'
-	//	It connects to the ManyToOne property on the Student table (basically saying they are the SAME relationship
+	@OneToMany(mappedBy="supervisor", cascade={ CascadeType.PERSIST })
+	private Set<Student> supervisionGroup;
 	
-	// ensures deletion of associated students. NOT WISE!. @OneToMany(mappedBy="supervisor", cascade={CascadeType.PERSIST, CascadeType.REMOVE}) 
-	@OneToMany(mappedBy="supervisor", cascade=CascadeType.PERSIST) 
-	private Set<Student> supervisionGroup = new HashSet<Student>();
-	
-	@ManyToMany(cascade=CascadeType.PERSIST)
-	private Set<Subject> subjects;
+	@ManyToMany(mappedBy="qualifiedTutors")
+	private Set<Subject> subjectsQualifiedToTeach;
 	
 	
-	
-	Tutor() {}
+	// required by hibernate
+	public Tutor() {}
 
-	//business constructor
-		public Tutor(String staffId, String name, int salary) {
-			super();
-			this.staffId = staffId;
-			this.name = name;
-			this.salary = salary;
-			this.supervisionGroup = new HashSet<Student>(); 
-			this.subjects = new HashSet<Subject>();
-		}
-		
-		
-	//business constructor
-	public Tutor(String staffId, String name, int salary, Set<Subject> subjects) {
+	// "business constructor"
+	public Tutor(String staffId, String name, int salary) 
+	{
 		super();
 		this.staffId = staffId;
 		this.name = name;
 		this.salary = salary;
-		this.supervisionGroup = new HashSet<Student>(); 
-		this.subjects = subjects;
-	}
-
-	public Tutor(String name) {
-		this.name=name;
 		this.supervisionGroup = new HashSet<Student>();
-		this.subjects = new HashSet<Subject>();
-	}
-
-	public Tutor(String name, Set<Subject> subjects) {
-		this.name=name;
-		this.subjects = subjects;
-		
-	}
-	public Tutor(String staffId, String name) {
-		this.staffId=staffId;
-		this.name=name;
-	}
-
-
-
-	public void addStudentsToSupervisionGroup(Student s){
-		this.supervisionGroup.add(s);
-		s.allocateSupervisor(this); // shortcut to implementing a more robust bi-directional relationship
+		this.subjectsQualifiedToTeach = new HashSet<Subject>();
 	}
 	
-	public Set<Student> getSupervisionGroup(){
-		return Collections.unmodifiableSet(this.supervisionGroup); //avoids side-effects
-		//return this.supervisionGroup;
+	public void addSubjectToQualifications(Subject subject)
+	{
+		this.subjectsQualifiedToTeach.add(subject);
+		subject.getQualifiedTutors().add(this);
 	}
 	
-	public Set<Student> getModifiableSupervisionGroup(){
-		return this.supervisionGroup; 
+	public void addStudentToSupervisionGroup(Student studentToAdd)
+	{
+		this.supervisionGroup.add(studentToAdd);
+		studentToAdd.allocateSupervisor(this);
 	}
 	
-	@Override
-	public String toString() {
-		String students =  this.getSupervisionGroup().toString();
-		String subjects =  this.getSubjects().toString();
-				
-		return name + "(" +staffId + ") " + salary 
-				+"\nTUTOR'S STUDENTS: " + students
-				+"\nTUTOR'S SPECIALITIES: " + subjects+ "\n";
+	public Set<Subject> getSubjects()
+	{
+		return this.subjectsQualifiedToTeach;
 	}
-
-	public String getName() {
-		return name;
+	
+	public Set<Student> getSupervisionGroup()
+	{
+		Set<Student> unmodifiable = Collections.unmodifiableSet(this.supervisionGroup);
+		return unmodifiable;
 	}
-
-	public int getId() {
-		return id;
+	
+	public Set<Student> getModifiableSupervisionGroup()
+	{
+		return this.supervisionGroup;
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	
+	public String getName()
+	{
+		return this.name;
 	}
-
-	public String getStaffId() {
-		return staffId;
-	}
-
-	public void setStaffId(String staffId) {
-		this.staffId = staffId;
-	}
-
-	public int getSalary() {
-		return salary;
-	}
-
-	public void setSalary(int salary) {
-		this.salary = salary;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setSupervisionGroup(Set<Student> supervisionGroup) {
-		this.supervisionGroup = supervisionGroup;
-	}
-
-	public Set<Subject> getSubjects() {
-		return subjects;
-	}
-
-	public void setSubjects(Set<Subject> subjects) {
-		this.subjects = subjects;
+	
+	public String toString()
+	{
+		return "Tutor: " + this.name + " (" + this.staffId + ")";
 	}
 
 	@Override
@@ -176,7 +108,12 @@ public class Tutor {
 			return false;
 		return true;
 	}
-	
-	
-	
+
+	public void createStudentAndAddToSupervisionGroup(String studentName, String enrollmentId,
+			String street, String city, String zipOrPostcode) 
+	{
+		Student student = new Student(studentName, enrollmentId, street, city, zipOrPostcode);
+		this.addStudentToSupervisionGroup(student);
+	}
+
 }

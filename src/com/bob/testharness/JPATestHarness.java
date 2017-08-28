@@ -2,72 +2,88 @@ package com.bob.testharness;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NamedQuery;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import com.bob.domain.Student;
 import com.bob.domain.Subject;
 import com.bob.domain.Tutor;
-import com.bob.utils.Utils;
-
-import static com.bob.utils.Utils.*;
 
 public class JPATestHarness {
-
+	public static EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA_MYSQL_CONFIG");
+	
 	public static void main(String[] args) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA_MYSQL_CONFIG");
+		setUpData();
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		
-		Set<Subject> subjects = generateSampleSetOfSubjects();
-		Map<String, Subject> subjectMap = generateSampleMapOfSubjects();
-		Set<Student> students = generateSampleSetOfStudents(subjectMap);
-		Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
-		tutors = assignStudentsToTutors(students, tutors);
+		// let's do some queries!
 		
-		Tutor t1 = Utils.createTestTutor();	
-		Student s1 = Utils.createFullTestStudent();
-		Student s2 = Utils.createTestStudentWithEIDAndName();
-		t1.addStudentsToSupervisionGroup(s1);
-		t1.addStudentsToSupervisionGroup(s2);
-		/**
-		 * TODO: modify Student so that a FK points to the subject. Subject table is unique, so we can't add same Subjects for each student.
-		 */
-		//System.out.println(t1);
-		em.persist(t1); 
-		testDBRetrieval(em);
+		//TypedQuery<Student> q = em.createQuery("from Student", Student.class); //takes care of generic warnings
 		
-		// START NEW DATA GENERATION and test		
-/*				Set<Subject> subjects = generateSampleSetOfSubjects();
-				Map<String, Subject> subjectMap = generateSampleMapOfSubjects();
-				Set<Student> students = generateSampleSetOfStudents(subjectMap);
-				Set<Tutor> tutors = generateSampleSetOfTutors(subjectMap);
-				tutors = assignStudentsToTutors(students, tutors);
-				
-				for (Tutor t : tutors) {
-					em.persist(t);
-				}
-	
-				testDBRetrieval(em);
-*/
-		// END NEW DATA GENERATION and test			
-				
-				tx.commit();
-				em.close();
+		String requiredName="marco fortes";
+		Query q = em.createQuery("from Student as student where lower(student.name) =  :name");
+		q.setParameter("name", requiredName);
+	//	System.out.println(q.getSingleResult());
+		List<Student> allStudents = q.getResultList();
+		allStudents.stream().forEach(System.out::println);
+		
+		
+		
+		tx.commit();
+		em.close();
 
 	} // ============== end of Main
 
+	public static void setUpData()
+	{ 
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		
+		// Some subjects
+		Subject mathematics = new Subject("Mathematics", 2);
+		Subject science = new Subject("Science", 2);
+		Subject history = new Subject("History", 3);
+		em.persist(mathematics);
+		em.persist(science);
+		em.persist(history);
 
+		// This tutor will be very busy, with lots of students
+		Tutor t1 = new Tutor("ABC123", "David Banks", 2939393);
+		t1.addSubjectToQualifications(mathematics);
+		t1.addSubjectToQualifications(science);
+		
+		// This tutor is new and has no students
+		// But he will be able to teach science and mathematics
+		Tutor t2 = new Tutor("DEF456", "Alan Bridges", 0);
+		t2.addSubjectToQualifications(mathematics);
+		t2.addSubjectToQualifications(science);
+		
+		// This tutor is the only tutor who can teach History
+		Tutor t3 = new Tutor("GHI678", "Linda Histroia", 0);
+		t3.addSubjectToQualifications(history);
+		
+		em.persist(t1);
+		em.persist(t2);
+		em.persist(t3);
+
+		// this only works because we are cascading from tutor to student
+		t1.createStudentAndAddToSupervisionGroup("Marco Fortes", "1-FOR-2010", "1 The Street", "Anytown", "484848");
+		t1.createStudentAndAddToSupervisionGroup("Kath Grainer", "2-GRA-2009", "2 Kaths Street", "Georgia", "939393");
+		t3.createStudentAndAddToSupervisionGroup("Sandra Perkins", "3-PER-2009", "4 The Avenue", "Georgia", "939393");
+		
+		tx.commit();
+		em.close();
+	}
 
 
 

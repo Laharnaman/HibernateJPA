@@ -1,64 +1,61 @@
 package com.bob.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
-public class Subject {
-
+public class Subject 
+{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	
 	@Column(unique=true, nullable=false)
-	private String subject;
-	private int noOfSemesters;
+	private String subjectName;
+	private int numberOfSemesters;
 	
-	public Subject() {}
+	@ManyToMany
+	private Set<Tutor> qualifiedTutors;
 	
-	public Subject(String subject, int noOfSemesters) {
-		super();
-		this.subject = subject;
-		this.noOfSemesters = noOfSemesters;
-	}
-
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
+	public Subject() {
 	}
 	
-	public String getSubject() {
-		return subject;
+	public Subject(String subjectName, int numberOfSemesters)
+	{
+		this.subjectName = subjectName;
+		this.numberOfSemesters = numberOfSemesters;
+		this.qualifiedTutors = new HashSet<Tutor>();
 	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
+	
+	public void addTutorToSubject(Tutor tutor)
+	{
+		this.qualifiedTutors.add(tutor);
+		tutor.getSubjects().add(this);
 	}
-
-	public int getNoOfSemesters() {
-		return noOfSemesters;
+	
+	public Set<Tutor> getQualifiedTutors()
+	{
+		return this.qualifiedTutors;
 	}
-
-	public void setNoOfSemesters(int noOfSemesters) {
-		this.noOfSemesters = noOfSemesters;
-	}
-
-	@Override
-	public String toString() {
-		return subject + "(" + noOfSemesters +")";
+	
+	public String toString()
+	{
+		return this.subjectName + " lasts for " + this.numberOfSemesters + " semesters";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
+		result = prime * result
+				+ ((subjectName == null) ? 0 : subjectName.hashCode());
 		return result;
 	}
 
@@ -71,14 +68,13 @@ public class Subject {
 		if (getClass() != obj.getClass())
 			return false;
 		Subject other = (Subject) obj;
-		if (subject == null) {
-			if (other.subject != null)
+		if (subjectName == null) {
+			if (other.subjectName != null)
 				return false;
-		} else if (!subject.equals(other.subject))
+		} else if (!subjectName.equals(other.subjectName))
 			return false;
 		return true;
 	}
-	
 	
 	
 }
