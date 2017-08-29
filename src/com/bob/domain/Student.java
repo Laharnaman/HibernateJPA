@@ -89,11 +89,6 @@ public class Student
     	return this.id;
     }
 
-	public String getEnrollmentId()
-	{
-		return this.enrollmentID;
-	}
-
 	public Tutor getSupervisor() {
 		return this.supervisor;
 	}
@@ -132,6 +127,30 @@ public class Student
 		} else if (!enrollmentID.equals(other.enrollmentID))
 			return false;
 		return true;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSupervisor(Tutor supervisor) {
+		this.supervisor = supervisor;
+	}
+
+	public String getEnrollmentID() {
+		return enrollmentID;
+	}
+
+	public void setEnrollmentID(String enrollmentID) {
+		this.enrollmentID = enrollmentID;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 
