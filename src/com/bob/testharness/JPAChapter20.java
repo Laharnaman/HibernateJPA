@@ -42,15 +42,28 @@ public class JPAChapter20 {
 
 		// Use criteria API: Tutors with more than 1 student.
 		Criteria tutorCriteria = session.createCriteria(Tutor.class);
-		tutorCriteria.add(Restrictions.sizeGt("supervisionGroup", 1)).list().stream().forEach(System.out::println);
+	//	tutorCriteria.add(Restrictions.sizeGt("supervisionGroup", 1)).list().stream().forEach(System.out::println);
 
 		// Using HQL: same thing
-		em.createQuery("select tutor from Tutor as tutor where tutor.supervisionGroup.size > 1").getResultList()
-				.stream().forEach(System.out::println);
+//		em.createQuery("select tutor from Tutor as tutor where tutor.supervisionGroup.size > 1").getResultList()
+//				.stream().forEach(System.out::println);
 		
+		//Critia API: list of tutors that have a student living in georgia
+		Criteria tutorGeorgia = session.createCriteria(Tutor.class);
+		tutorGeorgia
+			.add(Restrictions.sizeNe("supervisionGroup", 0))
+			.createAlias("supervisionGroup", "student")
+			.add(Restrictions.like("student.address.city", "%Georg%"))
+			.list()
+			.stream()
+			.forEach(System.out::println);
 		
-		
-		
+		//HQL
+		/*	em.createQuery("select tutor from Tutor tutor join tutor.supervisionGroup as student where student.address.city like '%G%'")
+		.getResultList()
+		.stream()
+		.forEach(System.out::println);*/
+	
 		tx.commit();
 		em.close();
 
@@ -89,7 +102,7 @@ public class JPAChapter20 {
 
 		// this only works because we are cascading from tutor to student
 		t1.createStudentAndAddToSupervisionGroup("Marco Fortes", "1-FOR-2010", "1 The Street", "Georgia", "484848");
-		t1.createStudentAndAddToSupervisionGroup("Kath Grainer", "2-GRA-2009", "2 Kaths Street", "Georgia", "939393");
+		t1.createStudentAndAddToSupervisionGroup("Kath Grainer", "2-GRA-2009", "2 Kaths Street", "Geor", "939393");
 		t3.createStudentAndAddToSupervisionGroup("Sandra Perkins", "3-PER-2009", "4 The Avenue", "Georgia", "939393");
 
 		tx.commit();
